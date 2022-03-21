@@ -3,6 +3,7 @@ package com.example.donation.v1;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuReport:
                 Toast toast = Toast.makeText(this, "Report Selected", Toast.LENGTH_SHORT);
                 toast.show();
+                startActivity(new Intent(this, ReportActivity.class));
                 break;
 
             default:
