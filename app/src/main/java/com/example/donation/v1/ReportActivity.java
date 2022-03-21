@@ -9,23 +9,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.donation.v1.databinding.ActivityReportBinding;
 
 public class ReportActivity extends AppCompatActivity {
 
-    private ListView listView;
-
     private ActivityReportBinding binding;
-
-    private static final String[] numbers = new String[] {
-            "Amount, Pay method",
-            "10, Direct",
-            "100, PayPal",
-            "1000, Direct",
-            "10, PayPal",
-            "5000, PayPal"
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +25,31 @@ public class ReportActivity extends AppCompatActivity {
         binding = ActivityReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        listView = binding.reportList;
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, numbers);
+        ListView listView = binding.reportList;
+        DonationAdapter adapter = new DonationAdapter(this, History.donations);
         listView.setAdapter(adapter);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menuReport :
+            case R.id.menuReport:
+                Toast toast1 = Toast.makeText(this, "Report Selected", Toast.LENGTH_SHORT);
+                toast1.show();
                 startActivity(new Intent(this, ReportActivity.class));
                 break;
+
+            case R.id.menuDonate:
+                Toast toast2 = Toast.makeText(this, "Donate Selected", Toast.LENGTH_SHORT);
+                toast2.show();
+                startActivity(new Intent(this, MainActivity.class));
+                break;
+
+            default:
+                Toast toast = Toast.makeText(this, "Setting click", Toast.LENGTH_SHORT);
+                toast.show();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }

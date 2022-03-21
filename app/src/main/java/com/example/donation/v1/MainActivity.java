@@ -15,49 +15,51 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.donation.v1.databinding.ActivityMainBinding;
+
 public class MainActivity extends AppCompatActivity {
-    private static final int MAX_DONATED_AMOUNT = 10000;
-    private static final int MIN_PICKER_AMOUNT = 0;
-    private static final int MAX_PICKER_AMOUNT = 1000;
 
-    private Button donateButton;
-    private RadioGroup paymentMethod;
-    private ProgressBar progressBar;
-    private NumberPicker amountPicker;
-
-    private int totalDonated = 0;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        donateButton = (Button) findViewById(R.id.donateButton);
-        paymentMethod = (RadioGroup) findViewById(R.id.paymentMethod);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        amountPicker = (NumberPicker) findViewById(R.id.amountPicker);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        progressBar.setMax(MAX_DONATED_AMOUNT);
+        Button donateButton = binding.donateButton;
+        RadioGroup paymentMethod = binding.paymentMethod;
+        ProgressBar progressBar = binding.progressBar;
+        NumberPicker amountPicker = binding.amountPicker;
 
-        amountPicker.setMinValue(MIN_PICKER_AMOUNT);
-        amountPicker.setMaxValue(MAX_PICKER_AMOUNT);
+        binding.progressBar.setMax(History.MAX_DONATED_AMOUNT);
+
+        binding.amountPicker.setMinValue(History.MIN_PICKER_AMOUNT);
+        binding.amountPicker.setMaxValue(History.MAX_PICKER_AMOUNT);
+
+        binding.progressBar.setProgress(History.totalDonated);
     }
 
     public void donateButtonPressed(View view) {
-        int amount = amountPicker.getValue();
-        int radioId = paymentMethod.getCheckedRadioButtonId();
+        int amount = binding.amountPicker.getValue();
+        int radioId = binding.paymentMethod.getCheckedRadioButtonId();
 
         String method = radioId == R.id.radioPayPal ? "PayPal" : "Direct";
 
-        if (totalDonated + amount >= MAX_DONATED_AMOUNT) {
-            totalDonated = MAX_DONATED_AMOUNT;
+        if (History.totalDonated + amount >= History.MAX_DONATED_AMOUNT) {
+            History.totalDonated = History.MAX_DONATED_AMOUNT;
         } else {
-            totalDonated += amount;
+            History.totalDonated += amount;
+
+            Donation donation = new Donation(amount, method);
+            History.donations.add(donation);
         }
-        progressBar.setProgress(totalDonated);
+        binding.progressBar.setProgress(History.totalDonated);
 
         Log.v("Donate", "Donate Pressed " + amount + ", method: " + method);
-        Log.v("Donate", "Current donated amount: " + totalDonated);
+        Log.v("Donate", "Current donated amount: " + History.totalDonated);
     }
 
     @Override
@@ -70,14 +72,20 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuReport:
-                Toast toast = Toast.makeText(this, "Report Selected", Toast.LENGTH_SHORT);
-                toast.show();
+                Toast toast1 = Toast.makeText(this, "Report Selected", Toast.LENGTH_SHORT);
+                toast1.show();
                 startActivity(new Intent(this, ReportActivity.class));
                 break;
 
+            case R.id.menuDonate:
+                Toast toast2 = Toast.makeText(this, "Donate Selected", Toast.LENGTH_SHORT);
+                toast2.show();
+                startActivity(new Intent(this, MainActivity.class));
+                break;
+
             default:
-                Toast toast1 = Toast.makeText(this, "Setting click", Toast.LENGTH_SHORT);
-                toast1.show();
+                Toast toast = Toast.makeText(this, "Setting click", Toast.LENGTH_SHORT);
+                toast.show();
                 break;
 
         }
