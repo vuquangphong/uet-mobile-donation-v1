@@ -20,7 +20,7 @@ public class ReportActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report);
+//        setContentView(R.layout.activity_report);
 
         binding = ActivityReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

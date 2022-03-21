@@ -18,6 +18,8 @@ public class DonationAdapter extends ArrayAdapter<Donation> {
 
     public DonationAdapter(@NonNull Context context, List<Donation> donations) {
         super(context, R.layout.row_donation, donations);
+        this.context = context;
+        this.donations = donations;
     }
 
     @NonNull
@@ -25,11 +27,11 @@ public class DonationAdapter extends ArrayAdapter<Donation> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 
-        View view = inflater.inflate(R.layout.row_donation, parent, true);
+        View view = inflater.inflate(R.layout.row_donation, parent, false);
 
         Donation donation = donations.get(position);
-        TextView amountView = (TextView) view.findViewById(R.id.row_amount);
-        TextView methodView = (TextView) view.findViewById(R.id.row_method);
+        TextView amountView = view.findViewById(R.id.row_amount);
+        TextView methodView = view.findViewById(R.id.row_method);
 
         amountView.setText("$" + donation.getAmount());
         methodView.setText(donation.getMethod());
