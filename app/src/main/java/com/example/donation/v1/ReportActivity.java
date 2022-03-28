@@ -1,32 +1,29 @@
 package com.example.donation.v1;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.donation.v1.databinding.ActivityReportBinding;
 
-public class ReportActivity extends AppCompatActivity {
+public class ReportActivity extends Base {
 
     private ActivityReportBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_report);
 
         binding = ActivityReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         ListView listView = binding.reportList;
-        DonationAdapter adapter = new DonationAdapter(this, History.donations);
+        DonationAdapter adapter = new DonationAdapter(this, DonationApp.donations);
         listView.setAdapter(adapter);
     }
 

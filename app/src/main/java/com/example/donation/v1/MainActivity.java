@@ -1,6 +1,5 @@
 package com.example.donation.v1;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,13 +12,16 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.donation.v1.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Base {
 
     private ActivityMainBinding binding;
+    private ProgressBar progressBar;
+    private TextView amountTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
         Button donateButton = binding.donateButton;
         RadioGroup paymentMethod = binding.paymentMethod;
-        ProgressBar progressBar = binding.progressBar;
+        progressBar = binding.progressBar;
+        amountTotal = binding.totalAmount;
         NumberPicker amountPicker = binding.amountPicker;
 
-        binding.progressBar.setMax(History.MAX_DONATED_AMOUNT);
+        binding.progressBar.setMax(DonationApp.MAX_DONATED_AMOUNT);
 
-        binding.amountPicker.setMinValue(History.MIN_PICKER_AMOUNT);
-        binding.amountPicker.setMaxValue(History.MAX_PICKER_AMOUNT);
+        binding.amountPicker.setMinValue(DonationApp.MIN_PICKER_AMOUNT);
+        binding.amountPicker.setMaxValue(DonationApp.MAX_PICKER_AMOUNT);
 
-        binding.progressBar.setProgress(History.totalDonated);
+        binding.progressBar.setProgress(DonationApp.totalDonated);
+        binding.totalAmount.setText("$0");
     }
 
     public void donateButtonPressed(View view) {
@@ -48,18 +52,21 @@ public class MainActivity extends AppCompatActivity {
 
         String method = radioId == R.id.radioPayPal ? "PayPal" : "Direct";
 
-        if (History.totalDonated + amount >= History.MAX_DONATED_AMOUNT) {
-            History.totalDonated = History.MAX_DONATED_AMOUNT;
+        if (DonationApp.totalDonated + amount >= DonationApp.MAX_DONATED_AMOUNT) {
+            DonationApp.totalDonated = DonationApp.MAX_DONATED_AMOUNT;
         } else {
-            History.totalDonated += amount;
+            DonationApp.totalDonated += amount;
 
             Donation donation = new Donation(amount, method);
-            History.donations.add(donation);
+            DonationApp.donations.add(donation);
         }
-        binding.progressBar.setProgress(History.totalDonated);
+        binding.progressBar.setProgress(DonationApp.totalDonated);
+
+        String totalAmountStr = "$" + DonationApp.totalDonated;
+        binding.totalAmount.setText(totalAmountStr);
 
         Log.v("Donate", "Donate Pressed " + amount + ", method: " + method);
-        Log.v("Donate", "Current donated amount: " + History.totalDonated);
+        Log.v("Donate", "Current donated amount: " + DonationApp.totalDonated);
     }
 
     @Override
@@ -90,5 +97,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void reset(MenuItem item) {
+        app.dbManager.reset();
+        app.totalDonated = 0;
+        progressBar.setProgress(0);
+        amountTotal.setText("$" + app.totalDonated);
     }
 }
